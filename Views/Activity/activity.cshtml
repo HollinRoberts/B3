@@ -1,0 +1,57 @@
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+
+<h1>Dojo Activity Center</h1> <p>Welcome @ViewBag.Name</p>
+<a href="/logout">Logout</a>
+<hr>
+
+<table class="table">
+    <tr>
+        <th>Activity</th>
+        <th>Date and Time</th>
+        <th>Duration</th>
+        <th>Event Coordinator</th>
+        <th>Number of Participants</th>
+        <th>Actions</th>
+    </tr>
+    @{
+        foreach(var event1 in @ViewBag.AllEvents){
+
+        
+    <tr>
+        <td><a href="/details/@event1.eventplanid">@event1.title </a></td>
+        <td>@event1.date @event1.time</td>
+        <td>@event1.duration</td>
+        <td>@event1.organizer.first @event1.organizer.last</td>
+        <td>@event1.attending.Count</td>
+      
+        @if(@event1.userid==@ViewBag.User)
+            {
+                <td><a href="/delete/@event1.eventplanid">Delete</a></td>;
+            }else if(@event1.attending.Count>0)
+            {
+                var found = false;
+                var glid = 0;
+                for(var i=0;i<@event1.attending.Count;i++)
+                {
+                    if(@event1.attending[i].User.userid==@ViewBag.User)
+                    {
+                        found = true;
+                        glid=@event1.attending[i].eventplanid;
+                    }        
+                }
+                if(found==true){
+                     <td><a href="/leave/@glid">Leave</a></td>
+                }
+                }else{
+                    <td><a href="/join/@event1.eventplanid">Join</a></td>
+            }
+    </tr>
+        }
+    }
+</table>
+<form action="new" method="get">
+<input type="submit" value="Add New Activity">
+</form>

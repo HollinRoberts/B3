@@ -1,0 +1,45 @@
+<h1>Dojo Activity Center</h1><a href="/logout">Logout</a> | <a href="/activity">Home</a>
+<hr>
+
+<h2>@ViewBag.Details.title</h2>
+<h3>Event Coordinator: @ViewBag.Details.organizer.first @ViewBag.Details.organizer.last</h3>
+<h3>Description</h3>
+<p>@ViewBag.Details.description</p>
+<h3>Participants:</h3>
+
+<ul>Participants:
+            @if(@ViewBag.Details.attending.Count>0)
+             {
+                foreach(var list in @ViewBag.Details.attending){
+                    <li> @list.User.first  @list.User.last</li>
+                }
+            }
+</ul>
+@{
+<table>
+    <tr>
+@if(@ViewBag.Details.organizer.userid==@ViewBag.User)
+            {
+                <td><a href="/delete/@ViewBag.Details.eventplanid">Delete</a></td>;
+            }else if(@ViewBag.Details.attending.Count>0)
+            {
+                var found = false;
+                var glid = 0;
+                for(var i=0;i<@ViewBag.Details.attending.Count;i++)
+                {
+                    if(@ViewBag.Details.attending[i].User.userid==@ViewBag.User)
+                    {
+                        found = true;
+                        glid=@ViewBag.Details.eventplanid;
+                    }        
+                }
+                if(found==true){
+                     <td><a href="/leave/@glid">Leave</a></td>
+                }else{
+                    <td><a href="/join/@ViewBag.Details.eventplanid">Join</a></td>
+                }
+                
+            }
+    </tr>
+    </table>
+    }
